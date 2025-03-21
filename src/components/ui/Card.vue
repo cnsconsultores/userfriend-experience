@@ -1,6 +1,6 @@
 
 <template>
-  <div :class="['bg-card text-card-foreground rounded-xl shadow', className]">
+  <div :class="['rounded-lg border bg-card text-card-foreground shadow-sm', className]">
     <slot></slot>
   </div>
 </template>
@@ -12,6 +12,18 @@ export default {
     className: {
       type: String,
       default: ''
+    },
+    variant: {
+      type: String,
+      default: 'default',
+      validator: (value) => ['default', 'glass'].includes(value)
+    }
+  },
+  computed: {
+    computedClass() {
+      return {
+        'backdrop-blur-sm bg-white/50 border-transparent': this.variant === 'glass'
+      }
     }
   }
 }

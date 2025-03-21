@@ -11,14 +11,14 @@
           class="mb-8"
         />
         
-        <Card variant="glass" class="mb-6">
-          <CardHeader>
-            <CardTitle>Instrucciones</CardTitle>
-            <CardDescription>
+        <div class="rounded-lg border bg-card text-card-foreground shadow-sm backdrop-blur-sm bg-white/50 border-transparent mb-6">
+          <div class="p-6 flex flex-col space-y-1.5">
+            <h3 class="font-semibold text-lg tracking-tight">Instrucciones</h3>
+            <p class="text-sm text-muted-foreground">
               Toma fotos claras y legibles de tus documentos. Asegúrate de que todos los datos son visibles.
-            </CardDescription>
-          </CardHeader>
-        </Card>
+            </p>
+          </div>
+        </div>
         
         <form @submit.prevent="handleSubmit" class="space-y-6">
           <FormSection 
@@ -97,11 +97,7 @@ import TransitionWrapper from '../components/ui/TransitionWrapper.vue';
 import WorkflowStep from '../components/workflow/WorkflowStep.vue';
 import FormSection from '../components/workflow/FormSection.vue';
 import DocumentUpload from '../components/workflow/DocumentUpload.vue';
-import Card from '../components/ui/Card.vue';
-import CardHeader from '../components/ui/CardHeader.vue';
-import CardTitle from '../components/ui/CardTitle.vue';
-import CardDescription from '../components/ui/CardDescription.vue';
-import { FileText, CreditCard, Landmark, ArrowRight } from 'lucide-vue-next';
+import { FileText, CreditCard, Landmark } from 'lucide-vue-next';
 
 export default {
   name: 'DocumentsUpload',
@@ -113,14 +109,9 @@ export default {
     WorkflowStep,
     FormSection,
     DocumentUpload,
-    Card,
-    CardHeader,
-    CardTitle,
-    CardDescription,
     FileText,
     CreditCard,
-    Landmark,
-    ArrowRight
+    Landmark
   },
   data() {
     return {
