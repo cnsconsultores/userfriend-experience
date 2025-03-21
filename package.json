@@ -62,7 +62,7 @@
     "tailwindcss-animate": "^1.0.7",
     "vaul": "^0.9.3",
     "vue": "^3.4.15",
-    "vue-router": "^4.2.5",
+    "vue-router": "^4.5.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
