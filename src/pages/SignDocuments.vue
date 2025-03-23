@@ -168,6 +168,7 @@
 </template>
 
 <script>
+import { ref, reactive, onMounted } from 'vue';
 import AppHeader from '../components/layout/Header.vue';
 import AppFooter from '../components/layout/Footer.vue';
 import Button from '../components/ui/Button.vue';
@@ -179,7 +180,7 @@ import Card from '../components/ui/Card.vue';
 import CardHeader from '../components/ui/CardHeader.vue';
 import CardTitle from '../components/ui/CardTitle.vue';
 import CardContent from '../components/ui/CardContent.vue';
-import { FileCheck, AlertTriangle, HardHat, ArrowRight } from 'lucide-vue-next';
+import { FileCheck, AlertTriangle, HardHat } from 'lucide-vue-next';
 
 export default {
   name: 'SignDocuments',
@@ -197,8 +198,7 @@ export default {
     CardContent,
     FileCheck,
     AlertTriangle,
-    HardHat,
-    ArrowRight
+    HardHat
   },
   data() {
     return {
@@ -253,17 +253,21 @@ export default {
     }
   },
   created() {
+    console.log('SignDocuments component created');
+    
     // Initialize answers
     this.safetyQuestions.forEach(q => {
-      this.$set(this.answers, q.id, null);
+      this.answers[q.id] = null;
     });
+  },
+  mounted() {
+    console.log('SignDocuments component mounted');
   },
   methods: {
     handlePreventiveInfoScroll(event) {
       const element = event.target;
       // Check if scrolled to bottom
       const scrolledToEnd = Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 10;
-      this.hasScrolledToEnd = scrolledToEnd;
       
       if (scrolledToEnd && !this.hasScrolledToEnd) {
         this.hasScrolledToEnd = true;
@@ -282,7 +286,7 @@ export default {
       }
       
       // Check if all questions are answered
-      const unansweredQuestions = Object.entries(this.answers).filter(([_, value]) => value === null);
+      const unansweredQuestions = Object.values(this.answers).filter(value => value === null);
       if (unansweredQuestions.length > 0) {
         errors.safetyExam = 'Es necesario contestar todas las preguntas del examen';
       }

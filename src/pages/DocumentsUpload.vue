@@ -71,7 +71,15 @@
             <p v-if="errors.bankCertificate" class="text-xs text-destructive mt-2">{{ errors.bankCertificate }}</p>
           </FormSection>
           
-          <div class="flex justify-end pt-4">
+          <div class="flex justify-between pt-4">
+            <Button 
+              type="button"
+              variant="outline"
+              @click="saveAndExit"
+              icon="Save"
+            >
+              Guardar y salir
+            </Button>
             <Button 
               type="submit"
               :isLoading="isSubmitting"
@@ -97,7 +105,7 @@ import TransitionWrapper from '../components/ui/TransitionWrapper.vue';
 import WorkflowStep from '../components/workflow/WorkflowStep.vue';
 import FormSection from '../components/workflow/FormSection.vue';
 import DocumentUpload from '../components/workflow/DocumentUpload.vue';
-import { FileText, CreditCard, Landmark } from 'lucide-vue-next';
+import { FileText, CreditCard, Landmark, Save } from 'lucide-vue-next';
 
 export default {
   name: 'DocumentsUpload',
@@ -111,7 +119,8 @@ export default {
     DocumentUpload,
     FileText,
     CreditCard,
-    Landmark
+    Landmark,
+    Save
   },
   data() {
     return {
@@ -171,6 +180,20 @@ export default {
       return Object.keys(errors).length === 0;
     },
     
+    saveAndExit() {
+      // Save current progress
+      const documentInfo = {
+        idCard: this.documents.idCard.map(f => f.name),
+        socialSecurity: this.documents.socialSecurity.map(f => f.name),
+        bankCertificate: this.documents.bankCertificate.map(f => f.name)
+      };
+      localStorage.setItem('documentInfo', JSON.stringify(documentInfo));
+      
+      // Show success message and navigate
+      alert('Progreso guardado. Puedes continuar más tarde.');
+      this.$router.push('/');
+    },
+    
     handleSubmit() {
       if (!this.validateForm()) {
         return;
@@ -186,6 +209,8 @@ export default {
         bankCertificate: this.documents.bankCertificate.map(f => f.name)
       };
       localStorage.setItem('documentInfo', JSON.stringify(documentInfo));
+      
+      console.log('Navegando a sign-documents...');
       
       // Simulate API call
       setTimeout(() => {

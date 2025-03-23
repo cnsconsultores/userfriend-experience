@@ -1,59 +1,52 @@
 
 <template>
-  <div :class="['w-full', className]">
-    <div class="flex items-center justify-between mb-1">
-      <label 
-        :for="id" 
-        class="block text-sm font-medium"
-      >
-        {{ label }} <span v-if="required" class="text-destructive">*</span>
-      </label>
-      
-      <Button
-        type="button"
-        variant="ghost"
-        size="sm"
-        class="h-7 px-2"
-        @click="clearSignature"
-        :disabled="!hasSignature"
-        :icon="Trash2"
-      >
-        Borrar
-      </Button>
-    </div>
+  <div class="w-full">
+    <label 
+      v-if="label" 
+      :for="id" 
+      class="block text-sm font-medium mb-1"
+    >
+      {{ label }} <span v-if="required" class="text-destructive">*</span>
+    </label>
     
     <p v-if="description" class="text-xs text-muted-foreground mb-2">{{ description }}</p>
     
-    <div class="relative border rounded-lg overflow-hidden">
-      <canvas
-        ref="canvas"
+    <div 
+      :class="[
+        'border rounded-md mb-2 touch-none',
+        error ? 'border-destructive' : 'border-border',
+        className
+      ]"
+    >
+      <canvas 
+        ref="canvas" 
         :id="id"
-        class="w-full touch-none cursor-crosshair bg-white"
-        :style="{ height: `${height}px`, width: '100%' }"
+        class="w-full cursor-crosshair touch-none"
         @mousedown="startDrawing"
         @mousemove="draw"
-        @mouseup="endDrawing"
-        @mouseleave="endDrawing"
-        @touchstart="startDrawing"
+        @mouseup="stopDrawing"
+        @mouseleave="stopDrawing"
+        @touchstart="handleTouchStart"
+        @touchmove="handleTouchMove"
+        @touchend="stopDrawing"
       ></canvas>
-      
-      <div v-if="!hasSignature" class="absolute inset-0 flex items-center justify-center pointer-events-none">
-        <p class="text-muted-foreground text-sm">Firma aquí</p>
-      </div>
+    </div>
+    
+    <div class="flex justify-end space-x-2">
+      <button
+        type="button"
+        class="text-xs text-muted-foreground hover:text-foreground flex items-center"
+        @click="clearCanvas"
+      >
+        <span class="mr-1">Limpiar</span>
+      </button>
     </div>
   </div>
 </template>
 
 <script>
-import { Trash2 } from 'lucide-vue-next';
-import Button from '../ui/Button.vue';
-
 export default {
   name: 'SignatureCanvas',
-  components: {
-    Button,
-    Trash2
-  },
   props: {
     id: {
       type: String,
@@ -61,19 +54,11 @@ export default {
     },
     label: {
       type: String,
-      required: true
+      default: ''
     },
     description: {
       type: String,
       default: ''
-    },
-    width: {
-      type: Number,
-      default: 300
-    },
-    height: {
-      type: Number,
-      default: 200
     },
     required: {
       type: Boolean,
@@ -82,122 +67,127 @@ export default {
     className: {
       type: String,
       default: ''
+    },
+    error: {
+      type: Boolean,
+      default: false
+    },
+    modelValue: {
+      type: String,
+      default: null
     }
   },
   data() {
     return {
+      canvas: null,
+      ctx: null,
       isDrawing: false,
-      hasSignature: false,
-      lastPoint: null
+      lastX: 0,
+      lastY: 0
     }
   },
   mounted() {
-    const canvas = this.$refs.canvas;
-    if (!canvas) return;
+    this.setupCanvas();
     
-    const ctx = canvas.getContext('2d');
-    if (!ctx) return;
+    // Restore signature if available
+    if (this.modelValue) {
+      const img = new Image();
+      img.onload = () => {
+        this.ctx.drawImage(img, 0, 0);
+      };
+      img.src = this.modelValue;
+    }
     
-    const rect = canvas.getBoundingClientRect();
-    canvas.width = rect.width * window.devicePixelRatio;
-    canvas.height = rect.height * window.devicePixelRatio;
-    ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
-    
-    // Set drawing styles
-    ctx.lineJoin = 'round';
-    ctx.lineCap = 'round';
-    ctx.lineWidth = 2.5;
-    ctx.strokeStyle = '#000000';
-    
-    // Add touch event listeners
-    canvas.addEventListener('touchmove', this.handleTouchMove, { passive: false });
-    canvas.addEventListener('touchend', this.endDrawing);
+    // Handle window resize
+    window.addEventListener('resize', this.setupCanvas);
   },
   beforeUnmount() {
-    const canvas = this.$refs.canvas;
-    if (canvas) {
-      canvas.removeEventListener('touchmove', this.handleTouchMove);
-      canvas.removeEventListener('touchend', this.endDrawing);
-    }
+    window.removeEventListener('resize', this.setupCanvas);
   },
   methods: {
-    getCoordinates(event) {
-      const canvas = this.$refs.canvas;
-      if (!canvas) return null;
+    setupCanvas() {
+      this.canvas = this.$refs.canvas;
+      if (!this.canvas) return;
       
-      const rect = canvas.getBoundingClientRect();
-      let clientX, clientY;
+      this.ctx = this.canvas.getContext('2d');
       
-      // Check if it's a touch event
-      if ('touches' in event) {
-        clientX = event.touches[0].clientX;
-        clientY = event.touches[0].clientY;
-      } else {
-        clientX = event.clientX;
-        clientY = event.clientY;
-      }
+      // Set canvas dimensions
+      const rect = this.canvas.getBoundingClientRect();
+      this.canvas.width = rect.width;
+      this.canvas.height = 150; // Fixed height
       
-      return {
-        x: clientX - rect.left,
-        y: clientY - rect.top
-      };
+      // Set line style
+      this.ctx.lineJoin = 'round';
+      this.ctx.lineCap = 'round';
+      this.ctx.lineWidth = 2;
+      this.ctx.strokeStyle = '#000';
+      
+      // Clear the canvas
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
     },
-    
-    startDrawing(event) {
-      const point = this.getCoordinates(event);
-      if (!point) return;
-      
+    startDrawing(e) {
       this.isDrawing = true;
-      this.lastPoint = point;
+      const rect = this.canvas.getBoundingClientRect();
+      
+      [this.lastX, this.lastY] = [
+        e.clientX - rect.left,
+        e.clientY - rect.top
+      ];
     },
-    
-    draw(event) {
-      if (!this.isDrawing || !this.lastPoint) return;
-      
-      const canvas = this.$refs.canvas;
-      const ctx = canvas?.getContext('2d');
-      if (!canvas || !ctx) return;
-      
-      const currentPoint = this.getCoordinates(event);
-      if (!currentPoint) return;
-      
-      ctx.beginPath();
-      ctx.moveTo(this.lastPoint.x, this.lastPoint.y);
-      ctx.lineTo(currentPoint.x, currentPoint.y);
-      ctx.stroke();
-      
-      this.lastPoint = currentPoint;
-      this.hasSignature = true;
-    },
-    
-    handleTouchMove(event) {
+    draw(e) {
       if (!this.isDrawing) return;
-      event.preventDefault();
-      this.draw(event);
-    },
-    
-    endDrawing() {
-      this.isDrawing = false;
-      this.lastPoint = null;
       
-      if (this.hasSignature) {
-        const canvas = this.$refs.canvas;
-        if (canvas) {
-          const signatureDataUrl = canvas.toDataURL('image/png');
-          this.$emit('update:modelValue', signatureDataUrl);
-        }
+      const rect = this.canvas.getBoundingClientRect();
+      const currentX = e.clientX - rect.left;
+      const currentY = e.clientY - rect.top;
+      
+      this.ctx.beginPath();
+      this.ctx.moveTo(this.lastX, this.lastY);
+      this.ctx.lineTo(currentX, currentY);
+      this.ctx.stroke();
+      
+      [this.lastX, this.lastY] = [currentX, currentY];
+      
+      this.updateModelValue();
+    },
+    handleTouchStart(e) {
+      e.preventDefault();
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousedown', {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        this.startDrawing(mouseEvent);
       }
     },
-    
-    clearSignature() {
-      const canvas = this.$refs.canvas;
-      const ctx = canvas?.getContext('2d');
-      if (!canvas || !ctx) return;
-      
-      ctx.clearRect(0, 0, canvas.width / window.devicePixelRatio, canvas.height / window.devicePixelRatio);
-      this.hasSignature = false;
-      
-      this.$emit('update:modelValue', null);
+    handleTouchMove(e) {
+      e.preventDefault();
+      if (e.touches.length > 0) {
+        const touch = e.touches[0];
+        const mouseEvent = new MouseEvent('mousemove', {
+          clientX: touch.clientX,
+          clientY: touch.clientY
+        });
+        this.draw(mouseEvent);
+      }
+    },
+    stopDrawing() {
+      this.isDrawing = false;
+      this.updateModelValue();
+    },
+    clearCanvas() {
+      this.ctx.fillStyle = '#fff';
+      this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+      this.updateModelValue();
+    },
+    updateModelValue() {
+      // Emit the signature as base64 image
+      if (this.canvas) {
+        const signature = this.canvas.toDataURL('image/png');
+        this.$emit('update:modelValue', signature);
+      }
     }
   }
 }

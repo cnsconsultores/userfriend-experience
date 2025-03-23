@@ -29,6 +29,12 @@ const router = createRouter({
   routes
 })
 
+// Add navigation guards
+router.beforeEach((to, from, next) => {
+  console.log(`Navigating from ${from.path} to ${to.path}`);
+  next();
+})
+
 // Create and mount app
 const app = createApp(App)
 app.use(router)
