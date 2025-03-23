@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader showBackButton title="Firmar Documentos" />
@@ -123,7 +122,7 @@
                   <br><br>
                   1. Los datos de carácter personal que Vd. facilite se incorporarán al fichero de la empresa de Vigilancia de Salud concertada.
                   <br><br>
-                  2. Los datos aportados por el interesado se utilizaran con carácter único y exclusivo para los fines previstos en el procedimiento o actuación de que se trate. En ningún caso los datos referidos serán objeto de tratamiento o cesión a terceros sino es con el consentimiento inequívoco del afectado, o en los supuestos previstos en los artículos 6.2 y 11.2 de la Ley 15/1999 de 13 de Diciembre de Protección de datos de carácter personal (BOE nº 298 de 14 Diciembre 1999)
+                  2. Los datos aportados por el interesado se utilizarán con carácter único y exclusivo para los fines previstos en el procedimiento o actuación de que se trate. En ningún caso los datos referidos serán objeto de tratamiento o cesión a terceros sino es con el consentimiento inequívoco del afectado, o en los supuestos previstos en los artículos 6.2 y 11.2 de la Ley 15/1999 de 13 de Diciembre de Protección de datos de carácter personal (BOE nº 298 de 14 Diciembre 1999)
                   <br><br>
                   De conformidad con lo dispuesto en la Ley 41/2003, de 14 de Noviembre, la actividad sanitaria requiere la conservación de la documentación clínica que es necesaria para el conocimiento veraz y actualizado del estado de salud del trabajador. Para ello es preciso la recogida y tratamiento de sus datos de carácter personal incluidos los definidos en el artículo 7 de la citada Ley 15/1999.
                   <br><br>
@@ -160,47 +159,6 @@
             </div>
           </FormSection>
           
-          <FormSection 
-            title="Examen Prevención Riesgos Laborales" 
-            description="Contesta a las siguientes preguntas sobre prevención de riesgos"
-            :icon="HardHat"
-          >
-            <div class="space-y-4">
-              <Card v-for="question in safetyQuestions" :key="question.id" class="border border-border/40">
-                <CardHeader class="pb-2">
-                  <CardTitle class="text-sm">{{ question.text }}</CardTitle>
-                </CardHeader>
-                <CardContent>
-                  <div class="flex space-x-4">
-                    <label class="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        :name="question.id"
-                        :value="true"
-                        v-model="answers[question.id]"
-                        class="h-4 w-4 text-primary focus:ring-primary"
-                      />
-                      <span class="text-sm">Verdadero</span>
-                    </label>
-                    
-                    <label class="flex items-center space-x-2">
-                      <input
-                        type="radio"
-                        :name="question.id"
-                        :value="false"
-                        v-model="answers[question.id]"
-                        class="h-4 w-4 text-primary focus:ring-primary"
-                      />
-                      <span class="text-sm">Falso</span>
-                    </label>
-                  </div>
-                </CardContent>
-              </Card>
-              
-              <p v-if="errors.safetyExam" class="text-xs text-destructive">{{ errors.safetyExam }}</p>
-            </div>
-          </FormSection>
-          
           <div class="flex justify-end pt-4">
             <Button 
               type="submit"
@@ -208,7 +166,7 @@
               icon="ArrowRight"
               iconPosition="right"
             >
-              Continuar
+              Continuar al Examen
             </Button>
           </div>
         </form>
@@ -259,34 +217,8 @@ export default {
         { id: 'personal-info', title: 'Información Personal' },
         { id: 'documents-upload', title: 'Subir Documentos' },
         { id: 'sign-documents', title: 'Firmar Documentos' },
+        { id: 'safety-exam', title: 'Examen Prevención' },
         { id: 'confirmation', title: 'Confirmación' }
-      ],
-      safetyQuestions: [
-        {
-          id: 'question1',
-          text: 'Es obligatorio el uso de equipo de protección individual en las áreas señalizadas.',
-          correct: true
-        },
-        {
-          id: 'question2',
-          text: 'En caso de emergencia, debo dirigirme al punto de encuentro más cercano siguiendo las indicaciones.',
-          correct: true
-        },
-        {
-          id: 'question3',
-          text: 'Puedo utilizar equipos para los que no he recibido formación si es una emergencia.',
-          correct: false
-        },
-        {
-          id: 'question4',
-          text: 'Debo informar inmediatamente de cualquier situación de riesgo que observe.',
-          correct: true
-        },
-        {
-          id: 'question5',
-          text: 'La señalización de seguridad es solo una recomendación que puedo ignorar si tengo experiencia.',
-          correct: false
-        }
       ],
       harassmentAgreement: false,
       safetyAgreement: false,
@@ -294,7 +226,6 @@ export default {
       hasScrolledHarassmentToEnd: false,
       hasScrolledSafetyToEnd: false,
       hasScrolledMedicalToEnd: false,
-      answers: {},
       errors: {},
       isSubmitting: false
     }
@@ -302,10 +233,21 @@ export default {
   created() {
     console.log('SignDocuments component created');
     
-    // Initialize answers
-    this.safetyQuestions.forEach(q => {
-      this.answers[q.id] = null;
-    });
+    // Load existing data if available
+    try {
+      const documentsInfo = localStorage.getItem('documentsInfo');
+      if (documentsInfo) {
+        const parsedData = JSON.parse(documentsInfo);
+        
+        if (parsedData.agreements) {
+          this.harassmentAgreement = parsedData.agreements.harassmentProtocol || false;
+          this.safetyAgreement = parsedData.agreements.safetyInfo || false;
+          this.medicalConsent = parsedData.agreements.medicalConsent || false;
+        }
+      }
+    } catch (e) {
+      console.error('Error loading saved data', e);
+    }
   },
   mounted() {
     console.log('SignDocuments component mounted');
@@ -356,12 +298,6 @@ export default {
         errors.medicalConsent = 'Es necesario aceptar el consentimiento médico';
       }
       
-      // Check if all questions are answered
-      const unansweredQuestions = Object.values(this.answers).filter(value => value === null);
-      if (unansweredQuestions.length > 0) {
-        errors.safetyExam = 'Es necesario contestar todas las preguntas del examen';
-      }
-      
       this.errors = errors;
       return Object.keys(errors).length === 0;
     },
@@ -378,23 +314,12 @@ export default {
       
       this.isSubmitting = true;
       
-      // Calculate exam score
-      const correctAnswers = this.safetyQuestions.filter(
-        q => this.answers[q.id] === q.correct
-      ).length;
-      const score = (correctAnswers / this.safetyQuestions.length) * 100;
-      
       // Save data
       const documentsInfo = {
         agreements: {
           harassmentProtocol: this.harassmentAgreement,
           safetyInfo: this.safetyAgreement,
           medicalConsent: this.medicalConsent
-        },
-        safetyExam: {
-          completed: true,
-          score: score,
-          answers: this.answers
         }
       };
       localStorage.setItem('documentsInfo', JSON.stringify(documentsInfo));
@@ -402,7 +327,7 @@ export default {
       // Simulate API call
       setTimeout(() => {
         this.isSubmitting = false;
-        this.$router.push('/confirmation');
+        this.$router.push('/safety-exam');
       }, 1500);
     }
   }

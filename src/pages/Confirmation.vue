@@ -1,4 +1,3 @@
-
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader showBackButton title="Confirmación" />
@@ -16,104 +15,102 @@
           description="Revisa la información proporcionada antes de enviar"
           :icon="ClipboardCheck"
         >
-          <div class="space-y-4">
-            <div v-if="personalInfo" class="bg-muted/50 rounded-lg p-4 space-y-3">
-              <h4 class="text-sm font-medium">Datos Personales</h4>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div><span class="font-medium">Nombre:</span> {{ personalInfo.fullName }}</div>
-                <div><span class="font-medium">DNI/NIE:</span> {{ personalInfo.dni }}</div>
-                <div><span class="font-medium">Email:</span> {{ personalInfo.email }}</div>
-                <div><span class="font-medium">Teléfono:</span> {{ personalInfo.phone }}</div>
-              </div>
-              
-              <h4 class="text-sm font-medium pt-2">Dirección</h4>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div><span class="font-medium">Dirección:</span> {{ personalInfo.address }}</div>
-                <div><span class="font-medium">Código Postal:</span> {{ personalInfo.postalCode }}</div>
-                <div><span class="font-medium">Ciudad:</span> {{ personalInfo.city }}</div>
-                <div><span class="font-medium">Provincia:</span> {{ personalInfo.province }}</div>
-              </div>
-              
-              <h4 class="text-sm font-medium pt-2">Datos Bancarios</h4>
-              <div class="grid grid-cols-2 gap-2 text-xs">
-                <div><span class="font-medium">IBAN:</span> {{ personalInfo.iban }}</div>
-                <div><span class="font-medium">Titular:</span> {{ personalInfo.accountHolder }}</div>
-              </div>
+          <div v-if="personalInfo" class="bg-muted/50 rounded-lg p-4 space-y-3">
+            <h4 class="text-sm font-medium">Datos Personales</h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div><span class="font-medium">Nombre:</span> {{ personalInfo.fullName }}</div>
+              <div><span class="font-medium">DNI/NIE:</span> {{ personalInfo.dni }}</div>
+              <div><span class="font-medium">Email:</span> {{ personalInfo.email }}</div>
+              <div><span class="font-medium">Teléfono:</span> {{ personalInfo.phone }}</div>
             </div>
             
-            <div v-if="documentInfo" class="bg-muted/50 rounded-lg p-4">
-              <h4 class="text-sm font-medium mb-2">Documentos Subidos</h4>
-              <div class="space-y-2 text-xs">
-                <div v-if="documentInfo.idCard && documentInfo.idCard.length">
-                  <span class="font-medium">DNI/NIE:</span> {{ documentInfo.idCard.join(', ') }}
-                </div>
-                <div v-if="documentInfo.socialSecurity && documentInfo.socialSecurity.length">
-                  <span class="font-medium">Tarjeta Seg. Social:</span> {{ documentInfo.socialSecurity.join(', ') }}
-                </div>
-                <div v-if="documentInfo.bankCertificate && documentInfo.bankCertificate.length">
-                  <span class="font-medium">Certificado Bancario:</span> {{ documentInfo.bankCertificate.join(', ') }}
-                </div>
-              </div>
+            <h4 class="text-sm font-medium pt-2">Dirección</h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div><span class="font-medium">Dirección:</span> {{ personalInfo.address }}</div>
+              <div><span class="font-medium">Código Postal:</span> {{ personalInfo.postalCode }}</div>
+              <div><span class="font-medium">Ciudad:</span> {{ personalInfo.city }}</div>
+              <div><span class="font-medium">Provincia:</span> {{ personalInfo.province }}</div>
             </div>
             
-            <div v-if="documentsInfo" class="bg-muted/50 rounded-lg p-4">
-              <h4 class="text-sm font-medium mb-2">Documentos Aceptados</h4>
-              <div class="space-y-2 text-xs">
-                <div>
-                  <span class="font-medium">Protocolo de Acoso:</span> 
-                  {{ documentsInfo.agreements.harassmentProtocol ? 'Aceptado ✓' : 'No aceptado ✗' }}
-                </div>
-                <div>
-                  <span class="font-medium">Información Preventiva:</span> 
-                  {{ documentsInfo.agreements.safetyInfo ? 'Aceptado ✓' : 'No aceptado ✗' }}
-                </div>
-                <div>
-                  <span class="font-medium">Consentimiento Médico:</span> 
-                  {{ documentsInfo.agreements.medicalConsent ? 'Aceptado ✓' : 'No aceptado ✗' }}
-                </div>
-                <div v-if="documentsInfo.safetyExam">
-                  <span class="font-medium">Examen Prevención:</span> 
-                  Completado ✓
-                </div>
+            <h4 class="text-sm font-medium pt-2">Datos Bancarios</h4>
+            <div class="grid grid-cols-2 gap-2 text-xs">
+              <div><span class="font-medium">IBAN:</span> {{ personalInfo.iban }}</div>
+              <div><span class="font-medium">Titular:</span> {{ personalInfo.accountHolder }}</div>
+            </div>
+          </div>
+          
+          <div v-if="documentInfo" class="bg-muted/50 rounded-lg p-4">
+            <h4 class="text-sm font-medium mb-2">Documentos Subidos</h4>
+            <div class="space-y-2 text-xs">
+              <div v-if="documentInfo.idCard && documentInfo.idCard.length">
+                <span class="font-medium">DNI/NIE:</span> {{ documentInfo.idCard.join(', ') }}
+              </div>
+              <div v-if="documentInfo.socialSecurity && documentInfo.socialSecurity.length">
+                <span class="font-medium">Tarjeta Seg. Social:</span> {{ documentInfo.socialSecurity.join(', ') }}
+              </div>
+              <div v-if="documentInfo.bankCertificate && documentInfo.bankCertificate.length">
+                <span class="font-medium">Certificado Bancario:</span> {{ documentInfo.bankCertificate.join(', ') }}
               </div>
             </div>
-            
-            <SignatureCanvas
-              id="finalSignature"
-              label="Firma de confirmación"
-              description="Firma para confirmar todos los datos proporcionados y documentos aceptados"
-              required
-              v-model="signature"
-            />
-            <p v-if="errors.signature" class="text-xs text-destructive">{{ errors.signature }}</p>
-            
-            <div class="space-y-3 pt-2">
-              <div class="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="confirmCheck"
-                  v-model="confirmCheck"
-                  class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label for="confirmCheck" class="text-sm font-medium">
-                  Confirmo que toda la información proporcionada es correcta
-                </label>
+          </div>
+          
+          <div v-if="documentsInfo" class="bg-muted/50 rounded-lg p-4">
+            <h4 class="text-sm font-medium mb-2">Documentos Aceptados</h4>
+            <div class="space-y-2 text-xs">
+              <div>
+                <span class="font-medium">Protocolo de Acoso:</span> 
+                {{ documentsInfo.agreements && documentsInfo.agreements.harassmentProtocol ? 'Aceptado ✓' : 'No aceptado ✗' }}
               </div>
-              
-              <div class="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="privacyCheck"
-                  v-model="privacyCheck"
-                  class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label for="privacyCheck" class="text-sm font-medium">
-                  He leído y acepto la política de privacidad y protección de datos
-                </label>
+              <div>
+                <span class="font-medium">Información Preventiva:</span> 
+                {{ documentsInfo.agreements && documentsInfo.agreements.safetyInfo ? 'Aceptado ✓' : 'No aceptado ✗' }}
               </div>
-              
-              <p v-if="errors.confirm" class="text-xs text-destructive">{{ errors.confirm }}</p>
+              <div>
+                <span class="font-medium">Consentimiento Médico:</span> 
+                {{ documentsInfo.agreements && documentsInfo.agreements.medicalConsent ? 'Aceptado ✓' : 'No aceptado ✗' }}
+              </div>
+              <div v-if="documentsInfo.safetyExam">
+                <span class="font-medium">Examen Prevención:</span> 
+                Completado ✓
+              </div>
             </div>
+          </div>
+          
+          <SignatureCanvas
+            id="finalSignature"
+            label="Firma de confirmación"
+            description="Firma para confirmar todos los datos proporcionados y documentos aceptados"
+            required
+            v-model="signature"
+          />
+          <p v-if="errors.signature" class="text-xs text-destructive">{{ errors.signature }}</p>
+          
+          <div class="space-y-3 pt-2">
+            <div class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="confirmCheck"
+                v-model="confirmCheck"
+                class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label for="confirmCheck" class="text-sm font-medium">
+                Confirmo que toda la información proporcionada es correcta
+              </label>
+            </div>
+            
+            <div class="flex items-center space-x-2">
+              <input
+                type="checkbox"
+                id="privacyCheck"
+                v-model="privacyCheck"
+                class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+              />
+              <label for="privacyCheck" class="text-sm font-medium">
+                He leído y acepto la política de privacidad y protección de datos
+              </label>
+            </div>
+            
+            <p v-if="errors.confirm" class="text-xs text-destructive">{{ errors.confirm }}</p>
           </div>
         </FormSection>
         
@@ -163,6 +160,7 @@ export default {
         { id: 'personal-info', title: 'Información Personal' },
         { id: 'documents-upload', title: 'Subir Documentos' },
         { id: 'sign-documents', title: 'Firmar Documentos' },
+        { id: 'safety-exam', title: 'Examen Prevención' },
         { id: 'confirmation', title: 'Confirmación' }
       ],
       personalInfo: null,

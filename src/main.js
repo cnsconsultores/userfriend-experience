@@ -8,6 +8,7 @@ import Index from './pages/Index.vue'
 import PersonalInfo from './pages/PersonalInfo.vue'
 import DocumentsUpload from './pages/DocumentsUpload.vue'
 import SignDocuments from './pages/SignDocuments.vue'
+import SafetyExam from './pages/SafetyExam.vue'
 import Confirmation from './pages/Confirmation.vue'
 import ProcessCompleted from './pages/ProcessCompleted.vue'
 import NotFound from './pages/NotFound.vue'
@@ -18,6 +19,7 @@ const routes = [
   { path: '/personal-info', component: PersonalInfo },
   { path: '/documents-upload', component: DocumentsUpload },
   { path: '/sign-documents', component: SignDocuments },
+  { path: '/safety-exam', component: SafetyExam },
   { path: '/confirmation', component: Confirmation },
   { path: '/completed', component: ProcessCompleted },
   { path: '/:pathMatch(.*)*', component: NotFound }
