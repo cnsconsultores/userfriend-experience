@@ -57,23 +57,35 @@
             </div>
             
             <div v-if="documentsInfo" class="bg-muted/50 rounded-lg p-4">
-              <h4 class="text-sm font-medium mb-2">Documentos Firmados</h4>
+              <h4 class="text-sm font-medium mb-2">Documentos Aceptados</h4>
               <div class="space-y-2 text-xs">
                 <div>
-                  <span class="font-medium">Recibo Entrega Uniforme:</span> 
-                  {{ documentsInfo.signatures.uniformReceipt ? 'Firmado ✓' : 'No firmado ✗' }}
+                  <span class="font-medium">Protocolo de Acoso:</span> 
+                  {{ documentsInfo.agreements.harassmentProtocol ? 'Aceptado ✓' : 'No aceptado ✗' }}
                 </div>
                 <div>
-                  <span class="font-medium">Acuse Recibo Información Preventiva:</span> 
-                  {{ documentsInfo.signatures.safetyInfo ? 'Firmado ✓' : 'No firmado ✗' }}
+                  <span class="font-medium">Información Preventiva:</span> 
+                  {{ documentsInfo.agreements.safetyInfo ? 'Aceptado ✓' : 'No aceptado ✗' }}
+                </div>
+                <div>
+                  <span class="font-medium">Consentimiento Médico:</span> 
+                  {{ documentsInfo.agreements.medicalConsent ? 'Aceptado ✓' : 'No aceptado ✗' }}
                 </div>
                 <div v-if="documentsInfo.safetyExam">
                   <span class="font-medium">Examen Prevención:</span> 
-                  {{ documentsInfo.safetyExam.score.toFixed(0) }}% 
-                  ({{ documentsInfo.safetyExam.passed ? 'Aprobado ✓' : 'No aprobado ✗' }})
+                  Completado ✓
                 </div>
               </div>
             </div>
+            
+            <SignatureCanvas
+              id="finalSignature"
+              label="Firma de confirmación"
+              description="Firma para confirmar todos los datos proporcionados y documentos aceptados"
+              required
+              v-model="signature"
+            />
+            <p v-if="errors.signature" class="text-xs text-destructive">{{ errors.signature }}</p>
             
             <div class="space-y-3 pt-2">
               <div class="flex items-center space-x-2">
@@ -129,6 +141,7 @@ import Button from '../components/ui/Button.vue';
 import TransitionWrapper from '../components/ui/TransitionWrapper.vue';
 import WorkflowStep from '../components/workflow/WorkflowStep.vue';
 import FormSection from '../components/workflow/FormSection.vue';
+import SignatureCanvas from '../components/workflow/SignatureCanvas.vue';
 import { ClipboardCheck, SendHorizontal } from 'lucide-vue-next';
 
 export default {
@@ -140,6 +153,7 @@ export default {
     TransitionWrapper,
     WorkflowStep,
     FormSection,
+    SignatureCanvas,
     ClipboardCheck,
     SendHorizontal
   },
@@ -154,6 +168,7 @@ export default {
       personalInfo: null,
       documentInfo: null,
       documentsInfo: null,
+      signature: null,
       confirmCheck: false,
       privacyCheck: false,
       errors: {},
@@ -185,6 +200,10 @@ export default {
     validateForm() {
       const errors = {};
       
+      if (!this.signature) {
+        errors.signature = 'Es necesario firmar para confirmar todos los datos';
+      }
+      
       if (!this.confirmCheck || !this.privacyCheck) {
         errors.confirm = 'Es necesario aceptar ambas confirmaciones para continuar';
       }
@@ -204,8 +223,9 @@ export default {
       setTimeout(() => {
         // In a real app, here you would send all collected data to your backend
         
-        // Save completion status
+        // Save completion status and signature
         localStorage.setItem('processCompleted', 'true');
+        localStorage.setItem('finalSignature', this.signature);
         
         this.isSubmitting = false;
         this.$router.push('/completed');
