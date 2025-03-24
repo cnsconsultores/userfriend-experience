@@ -1,3 +1,4 @@
+
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader showBackButton title="Firmar Documentos" />
@@ -111,48 +112,106 @@
             :icon="Stethoscope"
           >
             <div class="space-y-4">
-              <div 
-                ref="medicalConsentScroll" 
-                class="bg-muted/50 rounded-lg p-4 max-h-48 overflow-y-auto"
-                @scroll="handleMedicalConsentScroll"
-              >
-                <h4 class="text-sm font-medium mb-2">A) DESEO REALIZAR RECONOCIMIENTO MÉDICO</h4>
-                <p class="text-sm text-muted-foreground">
-                  1) En cumplimiento de lo establecido en la Ley Orgánica 15/1999, de 13 de Diciembre de Protección de datos de carácter Personal, le informamos que:
-                  <br><br>
-                  1. Los datos de carácter personal que Vd. facilite se incorporarán al fichero de la empresa de Vigilancia de Salud concertada.
-                  <br><br>
-                  2. Los datos aportados por el interesado se utilizarán con carácter único y exclusivo para los fines previstos en el procedimiento o actuación de que se trate. En ningún caso los datos referidos serán objeto de tratamiento o cesión a terceros sino es con el consentimiento inequívoco del afectado, o en los supuestos previstos en los artículos 6.2 y 11.2 de la Ley 15/1999 de 13 de Diciembre de Protección de datos de carácter personal (BOE nº 298 de 14 Diciembre 1999)
-                  <br><br>
-                  De conformidad con lo dispuesto en la Ley 41/2003, de 14 de Noviembre, la actividad sanitaria requiere la conservación de la documentación clínica que es necesaria para el conocimiento veraz y actualizado del estado de salud del trabajador. Para ello es preciso la recogida y tratamiento de sus datos de carácter personal incluidos los definidos en el artículo 7 de la citada Ley 15/1999.
-                  <br><br>
-                  Si usted decidiera ejercer sus derechos de acceso, rectificación y cancelación, siempre que legalmente proceda de acuerdo con la referida Ley 15/1999, puede hacerlo dirigiendo su petición a la empresa de Vigilancia de Salud concertada o con la dirección de su empresa.
-                  <br><br>
-                  2) Acepto la realización del Examen de Salud y la práctica de las pruebas complementarias y específicas pertinentes, de acuerdo a lo dispuesto en la ley 31/1995 y en el Reglamento de los Servicios de Prevención 39/1997, reconociendo que el Examen de Salud tiene carácter voluntario salvo en los tres supuestos siguientes:
-                  <br><br>
-                  1. Cuando la realización de los reconocimientos médicos sea imprescindible para evaluar los efectos de las condiciones de trabajo sobre la salud de los trabajadores.
-                  <br><br>
-                  2. Para verificar si el estado de salud del trabajador puede constituir un peligro para él mismo, para los demás o para otras personas relacionadas con la empresa.
-                  <br><br>
-                  3. Cuando así esté establecido en una disposición legal en relación con la protección de riesgos específicos y actividades de especial peligrosidad.
-                  <br><br>
-                  (Continúe desplazándose para leer todo el contenido)
-                  <br><br>
-                  Última línea del documento informativo.
-                </p>
+              <h4 class="text-sm font-medium mb-2">¿Desea realizar reconocimiento médico?</h4>
+              
+              <div class="flex space-x-4 mb-4">
+                <label class="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="medicalExamOption"
+                    :value="true"
+                    v-model="wantsMedicalExam"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <span class="text-sm">Sí</span>
+                </label>
+                
+                <label class="flex items-center space-x-2">
+                  <input
+                    type="radio"
+                    name="medicalExamOption"
+                    :value="false"
+                    v-model="wantsMedicalExam"
+                    class="h-4 w-4 text-primary focus:ring-primary"
+                  />
+                  <span class="text-sm">No</span>
+                </label>
               </div>
               
-              <div class="flex items-center space-x-2">
-                <input
-                  type="checkbox"
-                  id="medicalConsent"
-                  v-model="medicalConsent"
-                  :disabled="!hasScrolledMedicalToEnd"
-                  class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
-                />
-                <label for="medicalConsent" class="text-sm font-medium">
-                  He leído y acepto el consentimiento médico
-                </label>
+              <div v-if="wantsMedicalExam === true">
+                <div 
+                  ref="medicalConsentScroll" 
+                  class="bg-muted/50 rounded-lg p-4 max-h-48 overflow-y-auto"
+                  @scroll="handleMedicalConsentScroll"
+                >
+                  <h4 class="text-sm font-medium mb-2">A) DESEO REALIZAR RECONOCIMIENTO MÉDICO</h4>
+                  <p class="text-sm text-muted-foreground">
+                    1) En cumplimiento de lo establecido en la Ley Orgánica 15/1999, de 13 de Diciembre de Protección de datos de carácter Personal, le informamos que:
+                    <br><br>
+                    1. Los datos de carácter personal que Vd. facilite se incorporarán al fichero de la empresa de Vigilancia de Salud concertada.
+                    <br><br>
+                    2. Los datos aportados por el interesado se utilizarán con carácter único y exclusivo para los fines previstos en el procedimiento o actuación de que se trate. En ningún caso los datos referidos serán objeto de tratamiento o cesión a terceros sino es con el consentimiento inequívoco del afectado, o en los supuestos previstos en los artículos 6.2 y 11.2 de la Ley 15/1999 de 13 de Diciembre de Protección de datos de carácter personal (BOE nº 298 de 14 Diciembre 1999)
+                    <br><br>
+                    De conformidad con lo dispuesto en la Ley 41/2003, de 14 de Noviembre, la actividad sanitaria requiere la conservación de la documentación clínica que es necesaria para el conocimiento veraz y actualizado del estado de salud del trabajador. Para ello es preciso la recogida y tratamiento de sus datos de carácter personal incluidos los definidos en el artículo 7 de la citada Ley 15/1999.
+                    <br><br>
+                    Si usted decidiera ejercer sus derechos de acceso, rectificación y cancelación, siempre que legalmente proceda de acuerdo con la referida Ley 15/1999, puede hacerlo dirigiendo su petición a la empresa de Vigilancia de Salud concertada o con la dirección de su empresa.
+                    <br><br>
+                    2) Acepto la realización del Examen de Salud y la práctica de las pruebas complementarias y específicas pertinentes, de acuerdo a lo dispuesto en la ley 31/1995 y en el Reglamento de los Servicios de Prevención 39/1997, reconociendo que el Examen de Salud tiene carácter voluntario salvo en los tres supuestos siguientes:
+                    <br><br>
+                    1. Cuando la realización de los reconocimientos médicos sea imprescindible para evaluar los efectos de las condiciones de trabajo sobre la salud de los trabajadores.
+                    <br><br>
+                    2. Para verificar si el estado de salud del trabajador puede constituir un peligro para él mismo, para los demás o para otras personas relacionadas con la empresa.
+                    <br><br>
+                    3. Cuando así esté establecido en una disposición legal en relación con la protección de riesgos específicos y actividades de especial peligrosidad.
+                    <br><br>
+                    (Continúe desplazándose para leer todo el contenido)
+                    <br><br>
+                    Última línea del documento informativo.
+                  </p>
+                </div>
+                
+                <div class="flex items-center space-x-2 mt-3">
+                  <input
+                    type="checkbox"
+                    id="medicalConsent"
+                    v-model="medicalConsent"
+                    :disabled="!hasScrolledMedicalToEnd"
+                    class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <label for="medicalConsent" class="text-sm font-medium">
+                    He leído y acepto el consentimiento médico
+                  </label>
+                </div>
+              </div>
+              
+              <div v-if="wantsMedicalExam === false">
+                <div 
+                  ref="medicalRejectScroll" 
+                  class="bg-muted/50 rounded-lg p-4 max-h-48 overflow-y-auto"
+                  @scroll="handleMedicalRejectScroll"
+                >
+                  <h4 class="text-sm font-medium mb-2">B) NO DESEO REALIZAR RECONOCIMIENTO MÉDICO</h4>
+                  <p class="text-sm text-muted-foreground">
+                    En virtud del artículo 22 de la Ley de Prevención de Riesgos Laborales, el empresario garantizará a los trabajadores a su servicio la vigilancia periódica de su estado de salud en función de los riesgos inherentes al trabajo. La empresa ha ofrecido a sus trabajadores los Exámenes de Salud, derecho al cual los trabajadores pueden renunciar, salvo en los tres supuestos contenidos en el apartado A.2.
+                    <br><br>
+                    (Continúe desplazándose para leer todo el contenido)
+                    <br><br>
+                    Última línea del documento informativo.
+                  </p>
+                </div>
+                
+                <div class="flex items-center space-x-2 mt-3">
+                  <input
+                    type="checkbox"
+                    id="medicalReject"
+                    v-model="medicalReject"
+                    :disabled="!hasScrolledMedicalRejectToEnd"
+                    class="h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary"
+                  />
+                  <label for="medicalReject" class="text-sm font-medium">
+                    He leído y acepto la información sobre renuncia al reconocimiento médico
+                  </label>
+                </div>
               </div>
               
               <p v-if="errors.medicalConsent" class="text-xs text-destructive">{{ errors.medicalConsent }}</p>
@@ -166,7 +225,7 @@
               icon="ArrowRight"
               iconPosition="right"
             >
-              Continuar al Examen
+              Continuar al Resumen
             </Button>
           </div>
         </form>
@@ -217,15 +276,18 @@ export default {
         { id: 'personal-info', title: 'Información Personal' },
         { id: 'documents-upload', title: 'Subir Documentos' },
         { id: 'sign-documents', title: 'Firmar Documentos' },
-        { id: 'safety-exam', title: 'Examen Prevención' },
-        { id: 'confirmation', title: 'Confirmación' }
+        { id: 'confirmation', title: 'Confirmación' },
+        { id: 'completed', title: 'Proceso Completado' }
       ],
       harassmentAgreement: false,
       safetyAgreement: false,
+      wantsMedicalExam: null,
       medicalConsent: false,
+      medicalReject: false,
       hasScrolledHarassmentToEnd: false,
       hasScrolledSafetyToEnd: false,
       hasScrolledMedicalToEnd: false,
+      hasScrolledMedicalRejectToEnd: false,
       errors: {},
       isSubmitting: false
     }
@@ -242,7 +304,9 @@ export default {
         if (parsedData.agreements) {
           this.harassmentAgreement = parsedData.agreements.harassmentProtocol || false;
           this.safetyAgreement = parsedData.agreements.safetyInfo || false;
+          this.wantsMedicalExam = parsedData.agreements.wantsMedicalExam;
           this.medicalConsent = parsedData.agreements.medicalConsent || false;
+          this.medicalReject = parsedData.agreements.medicalReject || false;
         }
       }
     } catch (e) {
@@ -283,6 +347,16 @@ export default {
       }
     },
     
+    handleMedicalRejectScroll(event) {
+      const element = event.target;
+      // Check if scrolled to bottom
+      const scrolledToEnd = Math.abs(element.scrollHeight - element.scrollTop - element.clientHeight) < 10;
+      
+      if (scrolledToEnd && !this.hasScrolledMedicalRejectToEnd) {
+        this.hasScrolledMedicalRejectToEnd = true;
+      }
+    },
+    
     validateForm() {
       const errors = {};
       
@@ -294,8 +368,12 @@ export default {
         errors.safetyAgreement = 'Es necesario aceptar la información preventiva';
       }
       
-      if (!this.medicalConsent) {
+      if (this.wantsMedicalExam === null) {
+        errors.medicalConsent = 'Es necesario seleccionar una opción sobre el reconocimiento médico';
+      } else if (this.wantsMedicalExam === true && !this.medicalConsent) {
         errors.medicalConsent = 'Es necesario aceptar el consentimiento médico';
+      } else if (this.wantsMedicalExam === false && !this.medicalReject) {
+        errors.medicalConsent = 'Es necesario aceptar la información sobre renuncia al reconocimiento médico';
       }
       
       this.errors = errors;
@@ -319,7 +397,9 @@ export default {
         agreements: {
           harassmentProtocol: this.harassmentAgreement,
           safetyInfo: this.safetyAgreement,
-          medicalConsent: this.medicalConsent
+          wantsMedicalExam: this.wantsMedicalExam,
+          medicalConsent: this.medicalConsent,
+          medicalReject: this.medicalReject
         }
       };
       localStorage.setItem('documentsInfo', JSON.stringify(documentsInfo));
@@ -327,7 +407,7 @@ export default {
       // Simulate API call
       setTimeout(() => {
         this.isSubmitting = false;
-        this.$router.push('/safety-exam');
+        this.$router.push('/confirmation');
       }, 1500);
     }
   }

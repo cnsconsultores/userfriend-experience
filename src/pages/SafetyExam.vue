@@ -5,16 +5,17 @@
     
     <main class="flex-1 container max-w-2xl mx-auto p-6">
       <TransitionWrapper class="space-y-6">
-        <WorkflowStep 
-          :steps="workflowSteps" 
-          currentStepId="safety-exam" 
-          class="mb-8"
-        />
+        <div class="text-center mb-8">
+          <h2 class="text-2xl font-bold">Examen de Prevención de Riesgos Laborales</h2>
+          <p class="text-muted-foreground">
+            Contesta a las siguientes preguntas sobre prevención de riesgos
+          </p>
+        </div>
         
         <form @submit.prevent="handleSubmit" class="space-y-8">
           <FormSection 
-            title="Examen Prevención Riesgos Laborales" 
-            description="Contesta a las siguientes preguntas sobre prevención de riesgos"
+            title="Cuestionario" 
+            description="Por favor, indica si las siguientes afirmaciones son verdaderas o falsas"
             :icon="HardHat"
           >
             <div class="space-y-4">
@@ -57,10 +58,10 @@
             <Button 
               type="submit"
               :isLoading="isSubmitting"
-              icon="ArrowRight"
+              icon="CheckCircle"
               iconPosition="right"
             >
-              Continuar
+              Enviar respuestas
             </Button>
           </div>
         </form>
@@ -76,13 +77,12 @@ import AppHeader from '../components/layout/Header.vue';
 import AppFooter from '../components/layout/Footer.vue';
 import Button from '../components/ui/Button.vue';
 import TransitionWrapper from '../components/ui/TransitionWrapper.vue';
-import WorkflowStep from '../components/workflow/WorkflowStep.vue';
 import FormSection from '../components/workflow/FormSection.vue';
 import Card from '../components/ui/Card.vue';
 import CardHeader from '../components/ui/CardHeader.vue';
 import CardTitle from '../components/ui/CardTitle.vue';
 import CardContent from '../components/ui/CardContent.vue';
-import { HardHat } from 'lucide-vue-next';
+import { HardHat, CheckCircle } from 'lucide-vue-next';
 
 export default {
   name: 'SafetyExam',
@@ -91,23 +91,16 @@ export default {
     AppFooter,
     Button,
     TransitionWrapper,
-    WorkflowStep,
     FormSection,
     Card,
     CardHeader,
     CardTitle,
     CardContent,
-    HardHat
+    HardHat,
+    CheckCircle
   },
   data() {
     return {
-      workflowSteps: [
-        { id: 'personal-info', title: 'Información Personal' },
-        { id: 'documents-upload', title: 'Subir Documentos' },
-        { id: 'sign-documents', title: 'Firmar Documentos' },
-        { id: 'safety-exam', title: 'Examen Prevención' },
-        { id: 'confirmation', title: 'Confirmación' }
-      ],
       safetyQuestions: [
         {
           id: 'question1',
@@ -218,7 +211,12 @@ export default {
       // Simulate API call
       setTimeout(() => {
         this.isSubmitting = false;
-        this.$router.push('/confirmation');
+        
+        // Mostrar un mensaje de finalización
+        alert('Examen completado correctamente. Se pondrán en contacto con usted desde RRHH después de revisar toda la documentación.');
+        
+        // Redirigir al inicio
+        this.$router.push('/');
       }, 1500);
     }
   }

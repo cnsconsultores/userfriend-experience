@@ -19,9 +19,9 @@ const routes = [
   { path: '/personal-info', component: PersonalInfo },
   { path: '/documents-upload', component: DocumentsUpload },
   { path: '/sign-documents', component: SignDocuments },
-  { path: '/safety-exam', component: SafetyExam },
   { path: '/confirmation', component: Confirmation },
   { path: '/completed', component: ProcessCompleted },
+  { path: '/safety-exam', component: SafetyExam },
   { path: '/:pathMatch(.*)*', component: NotFound }
 ]
 

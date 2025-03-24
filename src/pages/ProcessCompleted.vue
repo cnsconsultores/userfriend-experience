@@ -3,37 +3,61 @@
   <div class="min-h-screen flex flex-col">
     <AppHeader title="Proceso Completado" />
     
-    <main class="flex-1 container max-w-2xl mx-auto p-6 flex flex-col items-center justify-center">
-      <TransitionWrapper class="text-center">
-        <div class="inline-flex h-24 w-24 items-center justify-center rounded-full bg-primary/20 mb-6">
-          <div class="h-12 w-12 text-primary flex items-center justify-center">
-            <!-- Uso directo de SVG en lugar del componente CheckCircle -->
-            <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-check-circle">
-              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/>
-              <polyline points="22 4 12 14.01 9 11.01"/>
-            </svg>
+    <main class="flex-1 container max-w-2xl mx-auto p-6">
+      <TransitionWrapper class="space-y-6">
+        <WorkflowStep 
+          :steps="workflowSteps" 
+          currentStepId="completed" 
+          class="mb-8"
+        />
+        
+        <div class="text-center">
+          <div class="inline-flex items-center justify-center p-3 rounded-full bg-primary/10 text-primary mb-4">
+            <CheckCircle size="30" />
           </div>
-        </div>
-        
-        <h1 class="text-3xl font-bold mb-4">¡Información Enviada!</h1>
-        
-        <p class="text-muted-foreground mb-8 max-w-md mx-auto">
-          Se ha completado el proceso de envío de documentación. Hemos enviado una copia al correo electrónico proporcionado.
-        </p>
-        
-        <div class="p-4 rounded-lg bg-muted/50 mb-8 max-w-md mx-auto">
-          <h3 class="font-medium text-base mb-2">Próximos pasos</h3>
-          <p class="text-sm text-muted-foreground">
-            El departamento de Recursos Humanos revisará la documentación y se pondrá en contacto con usted en los próximos días.
+          <h2 class="text-2xl font-bold mb-2">¡Gracias por completar la documentación!</h2>
+          <p class="text-muted-foreground mb-8">
+            Hemos recibido correctamente todos los documentos y datos necesarios para tu incorporación.
           </p>
         </div>
         
-        <Button 
-          @click="goToStart"
-          variant="outline"
-        >
-          Volver al inicio
-        </Button>
+        <Card class="border border-primary/20">
+          <CardHeader>
+            <CardTitle>A continuación deberá realizar un examen de PREVENCIÓN DE RIESGOS LABORALES</CardTitle>
+          </CardHeader>
+          <CardContent class="space-y-4">
+            <p>Por favor, descargue el manual desde este enlace:</p>
+            
+            <div class="text-center py-2">
+              <Button 
+                @click="downloadManual"
+                icon="Download"
+                iconPosition="left"
+                variant="outline"
+              >
+                Descargar Manual
+              </Button>
+            </div>
+            
+            <div class="border-t pt-4 text-center">
+              <p class="mb-4">Cuando esté listo para realizar el examen pulse en empezar.</p>
+              <Button 
+                @click="startExam"
+                icon="ArrowRight"
+                iconPosition="right"
+              >
+                Empezar examen
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+        
+        <div class="bg-muted/30 rounded-lg p-6 mt-4">
+          <h3 class="text-lg font-medium mb-2">¿Qué sigue ahora?</h3>
+          <p class="text-sm text-muted-foreground">
+            Después de que complete el examen de prevención de riesgos laborales, el departamento de Recursos Humanos revisará toda la documentación proporcionada y se pondrá en contacto con usted para los siguientes pasos del proceso de incorporación.
+          </p>
+        </div>
       </TransitionWrapper>
     </main>
     
@@ -46,6 +70,12 @@ import AppHeader from '../components/layout/Header.vue';
 import AppFooter from '../components/layout/Footer.vue';
 import Button from '../components/ui/Button.vue';
 import TransitionWrapper from '../components/ui/TransitionWrapper.vue';
+import WorkflowStep from '../components/workflow/WorkflowStep.vue';
+import Card from '../components/ui/Card.vue';
+import CardHeader from '../components/ui/CardHeader.vue';
+import CardTitle from '../components/ui/CardTitle.vue';
+import CardContent from '../components/ui/CardContent.vue';
+import { CheckCircle, Download, ArrowRight } from 'lucide-vue-next';
 
 export default {
   name: 'ProcessCompleted',
@@ -53,11 +83,34 @@ export default {
     AppHeader,
     AppFooter,
     Button,
-    TransitionWrapper
+    TransitionWrapper,
+    WorkflowStep,
+    Card,
+    CardHeader,
+    CardTitle,
+    CardContent,
+    CheckCircle,
+    Download,
+    ArrowRight
+  },
+  data() {
+    return {
+      workflowSteps: [
+        { id: 'personal-info', title: 'Información Personal' },
+        { id: 'documents-upload', title: 'Subir Documentos' },
+        { id: 'sign-documents', title: 'Firmar Documentos' },
+        { id: 'confirmation', title: 'Confirmación' },
+        { id: 'completed', title: 'Proceso Completado' }
+      ]
+    }
   },
   methods: {
-    goToStart() {
-      this.$router.push('/');
+    downloadManual() {
+      // En una aplicación real, esto descargaría el manual
+      alert('En una aplicación real, aquí se descargaría el manual de prevención de riesgos laborales.');
+    },
+    startExam() {
+      this.$router.push('/safety-exam');
     }
   }
 }

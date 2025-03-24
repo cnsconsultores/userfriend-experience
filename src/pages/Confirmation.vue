@@ -1,3 +1,4 @@
+
 <template>
   <div class="min-h-screen flex flex-col">
     <AppHeader showBackButton title="Confirmación" />
@@ -65,13 +66,9 @@
                 <span class="font-medium">Información Preventiva:</span> 
                 {{ documentsInfo.agreements && documentsInfo.agreements.safetyInfo ? 'Aceptado ✓' : 'No aceptado ✗' }}
               </div>
-              <div>
-                <span class="font-medium">Consentimiento Médico:</span> 
-                {{ documentsInfo.agreements && documentsInfo.agreements.medicalConsent ? 'Aceptado ✓' : 'No aceptado ✗' }}
-              </div>
-              <div v-if="documentsInfo.safetyExam">
-                <span class="font-medium">Examen Prevención:</span> 
-                Completado ✓
+              <div v-if="documentsInfo.agreements && documentsInfo.agreements.wantsMedicalExam !== null">
+                <span class="font-medium">Reconocimiento Médico:</span> 
+                {{ documentsInfo.agreements.wantsMedicalExam ? 'Solicitado ✓' : 'Renunciado ✓' }}
               </div>
             </div>
           </div>
@@ -160,8 +157,8 @@ export default {
         { id: 'personal-info', title: 'Información Personal' },
         { id: 'documents-upload', title: 'Subir Documentos' },
         { id: 'sign-documents', title: 'Firmar Documentos' },
-        { id: 'safety-exam', title: 'Examen Prevención' },
-        { id: 'confirmation', title: 'Confirmación' }
+        { id: 'confirmation', title: 'Confirmación' },
+        { id: 'completed', title: 'Proceso Completado' }
       ],
       personalInfo: null,
       documentInfo: null,
