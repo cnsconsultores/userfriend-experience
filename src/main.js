@@ -11,6 +11,7 @@ import SignDocuments from './pages/SignDocuments.vue'
 import SafetyExam from './pages/SafetyExam.vue'
 import Confirmation from './pages/Confirmation.vue'
 import ProcessCompleted from './pages/ProcessCompleted.vue'
+import ExamCompleted from './pages/ExamCompleted.vue'
 import NotFound from './pages/NotFound.vue'
 
 // Define routes
@@ -22,6 +23,7 @@ const routes = [
   { path: '/confirmation', component: Confirmation },
   { path: '/completed', component: ProcessCompleted },
   { path: '/safety-exam', component: SafetyExam },
+  { path: '/exam-completed', component: ExamCompleted },
   { path: '/:pathMatch(.*)*', component: NotFound }
 ]
 

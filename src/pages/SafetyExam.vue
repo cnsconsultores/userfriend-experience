@@ -211,12 +211,8 @@ export default {
       // Simulate API call
       setTimeout(() => {
         this.isSubmitting = false;
-        
-        // Mostrar un mensaje de finalización
-        alert('Examen completado correctamente. Se pondrán en contacto con usted desde RRHH después de revisar toda la documentación.');
-        
-        // Redirigir al inicio
-        this.$router.push('/');
+        // Redirigir a la página de finalización
+        this.$router.push('/exam-completed');
       }, 1500);
     }
   }
